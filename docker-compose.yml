@@ -1,0 +1,35 @@
+﻿networks:
+  deploy-dev:
+    driver: bridge
+services:
+  tracking:
+    container_name: tracking-service
+    image: tracking
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: 8082
+    ports:
+      - "8082:8082"
+    networks:
+      - deploy-dev
+    depends_on:
+      - tracking-db
+  tracking-db:
+    container_name: tracking-db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: tracking_db
+      PGPORT: 5434
+    ports:
+      - "5434:5434"
+    networks:
+      - deploy-dev
+    volumes:
+      - .postgres-data:/data
+volumes:
+  postgres-data:
