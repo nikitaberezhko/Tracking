@@ -2,7 +2,7 @@ namespace Domain;
 
 public enum StatusEnum
 {
-    Opened = 0,
+    Created = 0,
     
     InProgress = 1,
     

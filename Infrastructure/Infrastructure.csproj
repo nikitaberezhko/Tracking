@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BusModels\BusModels.csproj" />
       <ProjectReference Include="..\Exceptions\Exceptions.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MassTransit" Version="8.2.3" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     </ItemGroup>

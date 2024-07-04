@@ -1,9 +1,14 @@
 using Asp.Versioning;
 using FluentValidation;
+using Infrastructure.Bus.Implementations.Consumers;
+using Infrastructure.Settings;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Persistence.EntityFramework;
+using Services.Mapping;
 using Services.Services.Models.Request;
 using Services.Validators;
+using WebApi.Mapping;
 
 namespace WebApi.Extensions;
 
@@ -43,6 +48,40 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IValidator<GetStatusByOrderIdModel>, GetStatusByOrderIdValidator>();
         services.AddScoped<IValidator<UpdateStatusModel>, UpdateStatusValidator>();
         
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(ServiceMappingProfile), 
+            typeof(ApiMappingProfile));
+        return services;
+    }
+    
+    public static IServiceCollection ConfigureMassTransit(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var rmqSettings = configuration.GetSection("RmqSettings").Get<RmqSettings>();
+        
+        services.AddMassTransit(options =>
+        {
+            options.AddConsumer<CreateOrderConsumer>();
+            
+            options.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rmqSettings.Host, rmqSettings.Vhost, h =>
+                {
+                    h.Username(rmqSettings.Username);
+                    h.Password(rmqSettings.Password);
+                });
+                
+                cfg.ReceiveEndpoint("create-order", e =>
+                {
+                    e.ConfigureConsumer<CreateOrderConsumer>(context);
+                });
+            });
+        });
+
         return services;
     }
 }

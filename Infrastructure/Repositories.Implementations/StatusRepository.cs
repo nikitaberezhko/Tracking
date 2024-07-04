@@ -8,6 +8,30 @@ namespace Infrastructure.Repositories.Implementations;
 
 public class StatusRepository(DbContext dbContext) : IStatusRepository
 {
+    public async Task<Guid> CreateAsync(Status entity)
+    {
+        try
+        {
+            entity.Id = Guid.NewGuid();
+            entity.CompletionPercent = default;
+            entity.StatusType = StatusEnum.Created;
+            
+            await dbContext.Set<Status>().AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+        
+            return entity.Id;
+        }
+        catch
+        {
+            throw new DomainException
+            {
+                Title = "Create status failed",
+                Message = "Status with this order id already exists",
+                StatusCode = StatusCodes.Status409Conflict
+            };
+        }
+    }
+    
     public async Task<Status> GetAsync(Guid id)
     {
         var result = await dbContext.Set<Status>().FirstOrDefaultAsync(x => x.Id == id);

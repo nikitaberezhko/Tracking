@@ -31,5 +31,21 @@ services:
       - deploy-dev
     volumes:
       - .postgres-data:/data
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - deploy-dev
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+    volumes:
+      - .rabbit-data:/var/lib/rabbitmq
 volumes:
   postgres-data:
+  rabbit-data:

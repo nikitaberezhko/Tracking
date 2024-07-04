@@ -1,12 +1,11 @@
 using Infrastructure.Repositories.Implementations;
+using Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Persistence.EntityFramework;
-using Services.Mapping;
 using Services.Repositories.Abstractions;
 using Services.Services.Abstractions;
 using Services.Services.Implementations;
 using WebApi.Extensions;
-using WebApi.Mapping;
 using WebApi.Middlewares;
 
 namespace WebApi;
@@ -21,21 +20,22 @@ public class Program
 
         services.AddControllers();
         
+        services.Configure<RmqSettings>(builder.Configuration.GetSection("RmqSettings"));
+        
         // Extensions
         services.ConfigureApiVersioning();
         services.ConfigureContext(builder.Configuration.GetConnectionString(
             "DefaultConnectionString")!);
         services.AddScoped<DbContext, DataContext>();
         services.ConfigureStatusValidators();
+        services.ConfigureAutoMapper();
+        services.ConfigureMassTransit(builder.Configuration);
 
         // ExceptionHandlerMiddleware
         services.AddTransient<ExceptionHandlerMiddleware>();
         
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
-        services.AddAutoMapper(typeof(ServiceMappingProfile), 
-            typeof(ApiMappingProfile));
         
         // ExceptionHandlerMiddleware
         services.AddTransient<ExceptionHandlerMiddleware>();
