@@ -1,7 +1,5 @@
 using Infrastructure.Repositories.Implementations;
 using Infrastructure.Settings;
-using Microsoft.EntityFrameworkCore;
-using Persistence.EntityFramework;
 using Services.Repositories.Abstractions;
 using Services.Services.Abstractions;
 using Services.Services.Implementations;
@@ -26,7 +24,6 @@ public class Program
         services.ConfigureApiVersioning();
         services.ConfigureContext(builder.Configuration.GetConnectionString(
             "DefaultConnectionString")!);
-        services.AddScoped<DbContext, DataContext>();
         services.ConfigureStatusValidators();
         services.ConfigureAutoMapper();
         services.ConfigureMassTransit(builder.Configuration);
@@ -40,10 +37,10 @@ public class Program
         // ExceptionHandlerMiddleware
         services.AddTransient<ExceptionHandlerMiddleware>();
         
-        // Репозитории
+        // Repositories
         services.AddScoped<IStatusRepository, StatusRepository>();
         
-        // Сервисы
+        // Services
         services.AddScoped<IStatusService, StatusService>();
 
         var app = builder.Build();

@@ -35,9 +35,9 @@ public class StatusController(
         return response;
     }
     
-    [HttpGet("orders")]
+    [HttpGet("orders/{orderId:guid}")]
     public async Task<ActionResult<CommonResponse<GetStatusByOrderIdResponse>>> GetStatusById(
-        GetStatusByOrderIdRequest request)
+        [FromRoute] GetStatusByOrderIdRequest request)
     {
         var status = await statusService.GetStatusByOrderId(
             mapper.Map<GetStatusByOrderIdModel>(request));
@@ -55,7 +55,7 @@ public class StatusController(
         return response;
     }
 
-    [HttpPatch]
+    [HttpPut]
     public async Task<ActionResult<CommonResponse<UpdateStatusResponse>>> UpdateStatus(
         UpdateStatusRequest request)
     {

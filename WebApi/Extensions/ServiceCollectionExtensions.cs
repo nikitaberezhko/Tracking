@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         string connectionString)
     {
         services.AddDbContext<DataContext>(options => options.UseNpgsql(connectionString));
+        services.AddScoped<DbContext, DataContext>();
         return services;
     }
     

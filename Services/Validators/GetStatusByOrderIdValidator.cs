@@ -7,6 +7,8 @@ public class GetStatusByOrderIdValidator : AbstractValidator<GetStatusByOrderIdM
 {
     public GetStatusByOrderIdValidator()
     {
-        RuleFor(x => x.OrderId).NotEqual(Guid.Empty);
+        RuleFor(x => x.OrderId)
+            .NotEmpty()
+            .NotEqual(Guid.Empty);
     }
 }

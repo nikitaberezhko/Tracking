@@ -46,8 +46,7 @@ public class StatusService(
                 StatusCode = StatusCodes.Status400BadRequest
             };
         
-        var status = mapper.Map<Status>(model);
-        var statusResult = await statusRepository.GetByOrderIdAsync(status);
+        var statusResult = await statusRepository.GetByOrderIdAsync(mapper.Map<Status>(model));
         
         var result = mapper.Map<StatusModel>(statusResult);
         return result;
@@ -64,8 +63,7 @@ public class StatusService(
                 StatusCode = StatusCodes.Status400BadRequest
             };
         
-        var status = mapper.Map<Status>(model);
-        var statusResult = await statusRepository.UpdateAsync(status);
+        var statusResult = await statusRepository.UpdateAsync(mapper.Map<Status>(model));
         
         var result = mapper.Map<StatusModel>(statusResult);
         return result;

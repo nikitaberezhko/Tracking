@@ -7,6 +7,8 @@ public class GetStatusValidator : AbstractValidator<GetStatusModel>
 {
     public GetStatusValidator()
     {
-        RuleFor(x => x.Id).NotEqual(Guid.Empty);
+        RuleFor(x => x.Id)
+            .NotEmpty()
+            .NotEqual(Guid.Empty);
     }
 }

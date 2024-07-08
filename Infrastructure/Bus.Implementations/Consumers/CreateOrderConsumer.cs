@@ -1,12 +1,14 @@
 using BusModels;
 using Domain;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using Services.Repositories.Abstractions;
 
 namespace Infrastructure.Bus.Implementations.Consumers;
 
 public class CreateOrderConsumer(
-    IStatusRepository statusRepository) : IConsumer<OrderCreated>
+    IStatusRepository statusRepository,
+    ILogger<CreateOrderConsumer> logger) : IConsumer<OrderCreated>
 {
     public async Task Consume(ConsumeContext<OrderCreated> context)
     {
@@ -16,6 +18,8 @@ public class CreateOrderConsumer(
             CompletionPercent = 0,
             StatusType = StatusEnum.Created
         };
+        
+        logger.LogInformation("New status created for new order with id: {OrderId}", context.Message.OrderId);
 
         await statusRepository.CreateAsync(status);
     }
